@@ -1,0 +1,471 @@
+@import "mixins.scss";
+
+.monster-row-container {
+  background: rgba(0, 0, 0, 0.04);
+  //padding: 7px;
+
+  border-radius: 2px;
+  position: relative;
+
+  &.cls-chaos {
+    background: rgba($color-chaos, 0.2);
+  }
+  &.cls-death {
+    background: rgba($color-death, 0.2);
+  }
+  &.cls-sorcery {
+    background: rgba($color-sorcery, 0.2);
+  }
+  &.cls-life {
+    background: rgba($color-life, 0.2);
+  }
+  &.cls-nature {
+    background: rgba($color-nature, 0.2);
+  }
+  &.cls-trait {
+    background: rgba($primary-color, 0.05);
+  }
+
+  &.currently-selected-monster {
+    //background: rgba($primary-color, 0.15) !important;
+    border: 2px dashed rgba($primary-color, 0.5);
+  }
+
+  &.selectable {
+    cursor: pointer;
+    position: relative;
+
+    &:hover {
+      background: lighten(rgba($primary-color, 0.15), 25) !important;
+    }
+  }
+
+  &.monster-row-container-selection {
+    margin: 0;
+    background: #fff;
+    &:nth-child(even) {
+      background: #f1f1f1;
+    }
+    &:not(.monster-row-container-header):active {
+      background: rgba($primary-color, 0.1) !important;
+    }
+
+    @media (max-width: 1280px) {
+      padding: 0;
+      margin-bottom: 5px;
+      margin-top: 5px;
+    }
+  }
+}
+
+.monster-selection-row {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  min-height: 21px;
+
+  > * {
+    padding: 7px;
+    display: flex;
+    align-self: stretch;
+    align-items: center;
+  }
+  &.in-party {
+    font-weight: bold;
+  }
+
+  .monster-row-error {
+    svg {
+      margin-right: 5px;
+    }
+  }
+  .monster-row-family {
+    width: 6%;
+  }
+  .monster-row-creature {
+    width: 7%;
+  }
+  .monster-row-trait_name {
+    width: 11%;
+  }
+  .monster-row-material_name {
+    width: 11%;
+  }
+  .monster-row-stat {
+    width: 42px;
+    justify-content: center;
+    // &:nth-child(even) {
+    //   background: rgba(0, 0, 0, 0.05);
+    // }
+
+    span.stat-value {
+      padding: 5px;
+      border-radius: 4px;
+      min-width: 24px;
+      text-align: center;
+    }
+  }
+
+  .monster-row-trait_description {
+    width: 40%;
+  }
+  .monster-row-class {
+    width: 5%;
+  }
+  .monster-row-in-party {
+    width: 1.5%;
+  }
+
+  @media (max-width: 1280px) {
+    flex-direction: column;
+    text-align: center;
+    //flex-wrap: wrap;
+    .cls-container {
+      display: inline-flex;
+    }
+
+    > * {
+      box-sizing: border-box;
+      width: 100% !important;
+      &:not(.monster-row-in-party) {
+        padding: 5px 20px;
+      }
+
+      // &.monster-row-family, &.monster-row-creature {
+      //   width: 50% !important;
+      // }
+
+      &:nth-child(even) {
+        background: rgba(0, 0, 0, 0.05);
+      }
+    }
+  }
+
+  &.is-trait {
+    .monster-row-class {
+      opacity: 0;
+    }
+    .monster-row-family {
+      opacity: 0.2;
+    }
+    .monster-row-creature {
+      opacity: 0.2;
+    }
+  }
+}
+
+.monster-selection-modal {
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 60px);
+  padding: 20px 30px;
+  padding-bottom: 0;
+  @media (max-width: 1280px) {
+    padding: 20px 20px;
+  }
+
+  .monster-selection-search-tools {
+    margin-bottom: 15px;
+    margin-top: -5px;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: center;
+
+    input {
+      width: 80%;
+      display: block;
+      flex: 1;
+      height: 100%;
+    }
+    button {
+      margin-left: 10px;
+      padding: 0 40px;
+    }
+  }
+
+  .monster-selection-results-count {
+    text-align: center;
+    padding: 0px 30px;
+    padding-top: 15px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .monster-selection-table {
+    max-height: 100%;
+    overflow-y: scroll;
+    font-size: 13px;
+
+    // 「大视图」：标题行不变；仅数据行高度放大三倍，
+    // 生物列名称前显示该生物的缩略图。
+    &.monster-list-large {
+      .monster-row-container:not(.monster-row-container-header) {
+        .monster-selection-row {
+          min-height: 63px; // 21px × 3，容纳生物缩略图
+        }
+      }
+
+      .creature-row-sprite {
+        display: inline-block;
+        width: 58px;
+        height: 58px;
+        object-fit: contain;
+        image-rendering: pixelated;
+        margin-right: 8px;
+        flex-shrink: 0;
+      }
+    }
+  }
+
+  // 种族列的种族图标（仅取自 public/race_icons/，缺失时由 MISSING.png 占位，不再回退到代表生物缩略图）
+  .family-icon-box {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 5px;
+  }
+  .family-icon {
+    width: 18px;
+    height: 18px;
+    image-rendering: pixelated;
+    display: block;
+    border-radius: 2px;
+  }
+
+  // 视图切换（详细信息 / 图标 / 大视图）
+  .selection-view-toggle {
+    display: flex;
+    margin-left: 10px;
+    .view-btn {
+      padding: 6px 14px;
+      font-size: 13px;
+      border: 1px solid #ccc;
+      background: #fff;
+      color: #333; // 全局 button 是白字，浅色背景必须显式改深色，否则融为一体
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+      &:first-child {
+        border-radius: 4px 0 0 4px;
+      }
+      &.view-btn:not(:first-child):not(:last-child) {
+        border-left: none;
+      }
+      &:last-child {
+        border-radius: 0 4px 4px 0;
+        border-left: none;
+      }
+      &:hover {
+        background: rgba($primary-color, 0.12);
+      }
+      &.active {
+        background: lighten($primary-color, 5);
+        border-color: darken($primary-color, 5);
+        color: white;
+      }
+    }
+  }
+
+  // 每页条数选择（50/100/500/1000/全部）
+  .page-size-select {
+    margin-left: 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    white-space: nowrap;
+    select {
+      padding: 5px 6px;
+      font-size: 13px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background: #fff;
+      cursor: pointer;
+    }
+  }
+
+  // 「图标」视图：生物缩略图网格（与 .monster-selection-table 同元素叠加）
+  .monster-icon-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+    gap: 8px;
+    align-content: start;
+    padding: 2px;
+
+    .monster-icon-card {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 8px 4px 6px;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      &:nth-child(even) {
+        background: #fafafa;
+      }
+      &:hover {
+        background: lighten(rgba($primary-color, 0.15), 25) !important;
+        border-color: rgba($primary-color, 0.5);
+      }
+      &:active {
+        transform: translate(1px, 1px);
+      }
+      &.currently-selected-monster {
+        border: 2px dashed rgba($primary-color, 0.5);
+      }
+      &.in-party .monster-icon-name {
+        font-weight: bold;
+      }
+
+      .monster-icon-img {
+        width: 64px;
+        height: 64px;
+        object-fit: contain;
+        image-rendering: pixelated;
+      }
+      .monster-icon-name {
+        margin-top: 4px;
+        font-size: 12px;
+        line-height: 1.25;
+        word-break: break-all;
+      }
+      .monster-icon-family {
+        margin-top: 2px;
+        font-size: 11px;
+        color: #888;
+      }
+    }
+  }
+
+  .monster-row-container-header {
+    background: #eee;
+    //pointer-events: none;
+    user-select: none;
+
+    padding: 0;
+
+    .monster-row-header {
+      width: calc(100% - 16px);
+      font-size: 16px;
+      font-weight: bold;
+      border-top: 2px solid rgba(0, 0, 0, 0);
+      border-bottom: 2px solid #ddd;
+      &.sorted {
+        border-top: 2px solid #777;
+        border-bottom: 2px solid #777;
+      }
+      .sort-button svg {
+        margin-left: 2px;
+        font-size: 0.8em;
+        transform: translate(0, -1px);
+      }
+      padding: 0;
+      > * {
+        padding: 7px;
+      }
+      .sortable {
+        &:hover {
+          background: rgba(255, 255, 255, 0.5);
+          cursor: pointer;
+        }
+        &:active {
+          transform: translate(1px, 1px);
+        }
+      }
+    }
+
+    // .sortable {
+    //   position: relative;
+    //   &:hover:before {
+    //     content: " ";
+    //     position: absolute;
+    //     top: 0;
+    //     left: 0;
+    //     width: 100%;
+    //     height: 100%;
+    //     background: rgba(255, 255, 255, 0.5);
+    //   }
+    // }
+  }
+
+  .monster-selection-pagination {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+
+    .tab {
+      background: rgba($primary-color, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 8px;
+      border-top-left-radius: 2px;
+      border-top-right-radius: 2px;
+      border-radius: 2px;
+      margin-bottom: 5px;
+      margin-right: 5px;
+      cursor: pointer;
+      font-size: 14px;
+
+      user-select: none;
+
+      &.active {
+        background: lighten($primary-color, 5);
+        border-color: darken($primary-color, 5);
+        color: white;
+      }
+      &:hover {
+        background: lighten($primary-color, 10);
+        color: white;
+      }
+      &:active {
+        transform: translate(1px, 1px);
+      }
+    }
+  }
+}
+
+.modal-header {
+  background: #333;
+  width: 100%;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  position: relative;
+
+  h3 {
+    color: white;
+    padding: 0 20px;
+    font-size: 16px;
+    font-weight: normal;
+  }
+
+  button.modal-close {
+    width: 28px;
+    height: 28px;
+    font-size: 16px;
+    padding: 0;
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    line-height: 12px;
+  }
+}
+
+// 行内收藏星标（右上角悬浮）
+.monster-row-container-selection {
+  position: relative;
+
+  > .group-star-wrap {
+    position: absolute;
+    top: 3px;
+    right: 6px;
+    margin: 0;
+    z-index: 5;
+  }
+}

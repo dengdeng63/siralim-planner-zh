@@ -1,0 +1,537 @@
+@import "scss/mixins.scss";
+@import "scss/MonsterPlanner.scss";
+@import "scss/SpecializationPlanner.scss";
+@import "scss/MonsterSelectionModal.scss";
+@import "scss/ChatAssistant.scss";
+
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Roboto", sans-serif;
+  color: #222;
+  //background: darken($primary-color, 40);
+  background: #dedede;
+  &.ReactModal__Body--open {
+    overflow-y: hidden;
+  }
+}
+* {
+  box-sizing: border-box;
+}
+input,
+button,
+textarea,
+select {
+  font-family: "Roboto", sans-serif;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 30px 0;
+}
+
+main {
+  display: flex;
+  flex-direction: row;
+}
+
+header {
+  z-index: 100;
+  background: #222;
+  color: white;
+  margin: 0;
+  padding: 5px 25px;
+  line-height: 0;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-between;
+  span.version-num {
+    font-weight: normal;
+    font-size: 0.7em;
+    &:hover {
+      text-decoration: underline;
+    }
+    cursor: pointer;
+  }
+  a {
+    color: white;
+  }
+
+  h3 {
+    font-size: 16px;
+  }
+  p {
+    font-size: 14px;
+    margin-left: 80px;
+    font-weight: normal;
+  }
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row;
+
+    .app-header-left {
+      flex: 1;
+      width: auto;
+      align-items: center;
+      display: flex;
+      margin-left: -25px;
+      @media (max-width: 1720px) {
+        margin-left: 0;
+      }
+    }
+    .app-header-right {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: row;
+
+      p {
+        font-size: 14px;
+        margin-right: 20px;
+      }
+      button {
+        margin-left: 5px;
+        margin-right: 5px;
+        position: relative;
+        background: none;
+        z-index: 0;
+        &:hover {
+          background: rgba(255, 255, 255, 0.25);
+        }
+        span {
+          color: white;
+          z-index: 100;
+        }
+      }
+    }
+    // 菜单折叠容器：桌面端原样内联展开，移动端收进「菜单」按钮
+    .app-header-menu {
+      display: flex;
+      align-items: center;
+    }
+    .app-header-menu-toggle {
+      display: none;
+    }
+
+    // 移动端：紧凑单行页头，功能按钮全部收进「菜单」下拉
+    @media (max-width: 992px) {
+      height: 48px;
+      padding: 0 10px;
+      h3 {
+        font-size: 14px;
+        margin: 0;
+        white-space: nowrap;
+      }
+      .app-header-menu-toggle {
+        display: flex;
+        align-items: center;
+      }
+      .app-header-menu {
+        display: none;
+        position: absolute;
+        top: 48px;
+        left: 0;
+        right: 0;
+        background: #222;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 10px 14px 14px;
+        line-height: 1.4;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+        &.open {
+          display: flex;
+        }
+        p {
+          margin: 4px auto 10px;
+        }
+        button {
+          width: 100%;
+          margin: 4px 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+    }
+  }
+
+  button {
+  }
+  button span {
+    display: inline-block;
+    margin-left: 10px;
+  }
+
+  // 移动端页头吸顶：聊天窗口 fixed 定位依赖固定的页头高度（48px）；
+  // z-index 需高于聊天面板(900)，否则「菜单」下拉会被聊天窗口盖住
+  @media (max-width: 992px) {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+}
+
+footer {
+  background: #333; //darken($primary-color, 20);
+  padding: 15px 0px 10px 0;
+  font-size: 12px;
+  box-shadow: 0 200px 0px 200px #333;
+  color: white;
+  line-height: 150%;
+  p {
+    margin: 0;
+    font-size: 12px;
+  }
+  a {
+    color: lighten($primary-color, 40);
+  }
+}
+a {
+  color: $primary-color;
+}
+
+.container {
+  width: 1600px;
+  margin: 0 auto;
+  max-width: 100%;
+  @media (max-width: 1280px) {
+    padding: 0 20px;
+  }
+}
+
+h3.section-title {
+  margin-top: 0;
+  //margin-bottom: 0;
+  width: 100%;
+  text-align: center;
+  color: rgba(0, 0, 0, 0.7);
+  text-transform: uppercase;
+  font-size: 13px;
+}
+
+// #monster-planner h3.section-title {
+//   color: rgba(255, 255, 255, 0.7);
+// }
+
+.delete-button {
+  background: lighten($color-chaos, 10);
+  border: lighten($color-chaos, 5);
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &:hover {
+    background: lighten($color-chaos, 15);
+  }
+}
+
+.draggable {
+  cursor: move;
+}
+
+#monster-planner .monster-row-container {
+  .monster-row {
+    align-items: center;
+    padding: 3px 4px;
+    min-height: 27px;
+    > * {
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+  }
+}
+
+.monster-planner-trait {
+}
+
+.cls-container {
+  display: flex;
+  align-items: center;
+  color: #444;
+  &.center {
+    justify-content: center;
+  }
+}
+
+.class-icon {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  padding: 0;
+  margin-top: -1px;
+  image-rendering: crisp-edges;
+  display: block;
+}
+
+.cls {
+  width: 14px;
+  height: 14px;
+  min-width: 14px;
+  min-height: 14px;
+  background: #ddd;
+  border-radius: 50%;
+  display: block;
+
+  &.cls-death {
+    background: $color-death;
+  }
+  &.cls-chaos {
+    background: $color-chaos;
+  }
+  &.cls-nature {
+    background: $color-nature;
+  }
+  &.cls-life {
+    background: #ffd373;
+  }
+  &.cls-sorcery {
+    background: $color-sorcery;
+  }
+}
+
+.col-cls-death {
+  color: $color-death;
+}
+.col-cls-chaos {
+  color: $color-chaos;
+}
+.col-cls-nature {
+  color: $color-nature;
+}
+.col-cls-life {
+  color: darken($color-life, 30);
+}
+.col-cls-sorcery {
+  color: $color-sorcery;
+}
+.cls-full-name {
+  margin-left: 6px;
+}
+
+.ReactModal__Content {
+  outline: none !important;
+}
+
+.modal-overlay {
+  background-color: rgba(20, 20, 20, 0.45);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100000;
+  padding: 30px;
+  display: none;
+  &.is-open {
+    display: block;
+  }
+  @media (max-width: 1280px) {
+    padding: 10px;
+  }
+}
+
+.modal-content {
+  background: #fcfcfc;
+  height: 100%;
+  box-shadow: 2px 2px 4px -3px rgba(0, 0, 0, 0.9);
+}
+
+.modal-content-info {
+  max-width: 100%;
+  width: 1200px;
+  margin: 0 auto;
+  display: flex;
+
+  flex-direction: column;
+  &.modal-wide {
+    width: 1600px;
+  }
+}
+
+.modal-sm {
+  height: auto;
+  padding-bottom: 15px;
+}
+
+.info-modal {
+  line-height: 140%;
+  font-size: 15px;
+  padding: 10px 70px;
+  height: 100%;
+  max-height: 100%;
+  overflow-y: scroll;
+  h3 {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+  }
+}
+
+.notification {
+  padding: 10px;
+  border: 2px solid #ccc;
+  background-color: rgba(0, 0, 0, 0.1);
+  margin-bottom: 10px;
+  border-radius: 4px;
+}
+.notification-banner {
+  position: absolute;
+  right: 60px;
+  top: 48px;
+  width: auto;
+  max-width: 100%;
+  padding: 7px 20px;
+  //margin-bottom: -15px;
+  background: #eee;
+  font-size: 15px;
+  pointer-events: none;
+  user-select: none;
+  transition: opacity 0.5s ease;
+  text-align: center;
+  z-index: 1000;
+  border-radius: 5px;
+  border: 2px solid #ccc;
+  &.hidden {
+    opacity: 0;
+  }
+}
+.notification-error {
+  background-color: lighten($color-chaos, 45);
+  border-color: rgba($color-chaos, 0.25);
+  color: darken($color-chaos, 20);
+}
+.notification-success {
+  background-color: rgba(lighten($color-nature, 25), 0.7);
+  border-color: rgba($color-nature, 0.25);
+  color: darken($color-nature, 10);
+}
+.notification-warning {
+  background-color: lighten($color-life, 15);
+  border-color: darken(rgba($color-life, 0.45), 20);
+  color: darken($color-life, 45);
+}
+
+#upload-party-textarea {
+  height: 40vh;
+}
+#upload-party-button {
+  margin-top: 15px;
+}
+
+textarea {
+  width: 100%;
+}
+
+input,
+button,
+textarea {
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  padding: 8px 16px;
+  outline: none;
+  &:focus,
+  &:active {
+    border-color: lighten($primary-color, 15);
+    //background: lighten($primary-color, 50);
+  }
+}
+
+button {
+  border: none;
+  text-align: center;
+  display: block;
+  width: auto;
+  width: auto;
+  cursor: pointer;
+  background: lighten($primary-color, 5);
+  border-color: darken($primary-color, 5);
+  color: white;
+  &:hover {
+    background: lighten($primary-color, 10);
+  }
+
+  &:active {
+    transform: translate(1px, 1px);
+  }
+  &.lighter {
+    background: lighten($primary-color, 11);
+    border-color: darken($primary-color, 11);
+    &:hover {
+      background: lighten($primary-color, 16);
+    }
+  }
+
+  &.button-lg {
+    padding: 16px 32px;
+  }
+}
+
+.green-tick {
+  color: $color-nature;
+}
+.red-tick {
+  color: $color-chaos;
+}
+
+.ib {
+  display: inline-block;
+}
+
+.mobile-only {
+  display: none;
+  @media (max-width: 1280px) {
+    display: block;
+  }
+  @media (max-width: 992px) {
+    &.ib {
+      display: inline-block;
+    }
+  }
+}
+.mobile-hidden {
+  display: block;
+  @media (max-width: 1280px) {
+    display: none;
+  }
+}
+
+table {
+  border-collapse: collapse;
+  font-size: 13px;
+  th {
+    text-align: left;
+    padding: 2px 5px;
+  }
+  td {
+    padding: 4px 5px;
+  }
+  tr:nth-child(even) td {
+    background: #f1f1f1;
+  }
+}
+
+@media (max-width: 992px) {
+  main {
+    display: flex; // 原 block 改为纵向 flex，便于把问答助手排到最上面
+    flex-direction: column;
+  }
+  #chat-assistant {
+    order: -1; // 手机端问答助手置顶，免滚动直达
+  }
+  #specialization-planner {
+    width: 100%;
+    margin-left: 0 !important;
+    .toggle-bar {
+      display: none;
+    }
+  }
+}

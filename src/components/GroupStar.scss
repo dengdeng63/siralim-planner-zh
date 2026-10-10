@@ -1,0 +1,99 @@
+// 行内收藏星标 + 分组勾选弹层
+.group-star-wrap {
+  position: relative;
+  display: inline-block;
+  margin-left: 4px;
+}
+
+.group-star-btn {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  padding: 2px 3px;
+  color: #b8ad98; // 全局 button 白字，这里显式指定
+  &:hover {
+    color: #e8a33d;
+  }
+  &.active {
+    color: #e8a33d;
+  }
+}
+
+.group-star-pop {
+  position: absolute;
+  z-index: 1400;
+  top: 22px;
+  right: 0; // 星标都在表格右缘，left:0 会把弹层整个开出屏幕外，改为向左展开
+  left: auto;
+  min-width: 190px;
+  background: #fff;
+  border: 1px solid #c9c2b8;
+  border-radius: 8px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
+  padding: 8px;
+  font-size: 13px;
+  color: #333;
+  cursor: default;
+}
+
+.group-star-empty {
+  color: #8a8377;
+  padding: 4px 2px 8px;
+}
+
+.group-star-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3px 2px;
+
+  label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+  }
+  .group-star-count {
+    color: #8a8377;
+    font-size: 12px;
+  }
+  .group-star-del {
+    border: none;
+    background: none;
+    color: #b0685c;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0 4px;
+    &:hover {
+      color: #d14;
+    }
+  }
+}
+
+.group-star-new {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid #eee9e0;
+
+  input {
+    flex: 1;
+    min-width: 0;
+    border: 1px solid #d8d2c6;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+  button {
+    border: none;
+    background: #4a6fa5;
+    color: #fff;
+    border-radius: 6px;
+    padding: 4px 10px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+}
