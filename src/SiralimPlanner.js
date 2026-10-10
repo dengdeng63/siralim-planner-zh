@@ -21,10 +21,8 @@ import SpecializationPlanner from "./components/SpecializationPlanner";
 import parsePartyString from "./functions/parsePartyString";
 import randomSample from "./functions/randomSample";
 import getTraitErrors from "./functions/getTraitErrors";
-import ChatAssistant from "./components/ChatAssistant";
 import SpellLibraryModal from "./components/SpellLibraryModal";
 import SavePanel from "./components/SavePanel";
-import { getUserId, pullAndMerge } from "./functions/userData";
 import { t } from "./functions/lang";
 
 import "./App.scss";
@@ -723,10 +721,6 @@ class SiralimPlanner extends Component {
    **/
   componentDidMount() {
     this.initialLoad();
-    // 有用户 ID 时静默拉取云端数据（存档/分组），本地与服务端取并集
-    if (getUserId()) {
-      pullAndMerge();
-    }
   }
 
   /**
@@ -1313,20 +1307,6 @@ class SiralimPlanner extends Component {
           modalIsOpen={this.state.savePanelOpen}
           closeModal={this.closeSavePanel.bind(this)}
         />
-          <ChatAssistant
-            getPartyContext={() => this.buildPartyContext()}
-            onOpenPicker={(picker) => {
-              if (picker && picker.kind === "spell") {
-                // 法术类多结果：直接打开法术库并列出
-                this.setState({
-                  spellLibOpen: true,
-                  spellLibSearch: picker.search || "",
-                });
-              } else {
-                this.openBrowseModal(picker && picker.search);
-              }
-            }}
-          />
         </main>
         <AppFooter />
       </div>

@@ -1,66 +1,27 @@
 import React, { PureComponent } from "react";
 import { t } from "../functions/lang";
 import {
-  getUserId,
-  setUserId,
   getBuilds,
   saveBuild,
   deleteBuild,
-  pullAndMerge,
-  pushToCloud,
 } from "../functions/userData";
 import "./SavePanel.scss";
 
 /**
- * 存档面板：保存/读取/删除 build 搭配 + 用户 ID 云同步。
+ * 存档面板（纯本地）：保存/读取/删除 build 搭配。
  * 存档本体是完整的 URL query（?b=...&s=..&a=..&r=..&sp=..），
  * 读取即整页跳转，复用 initialLoad 的全部解析逻辑。
+ * 数据存在浏览器 localStorage，不依赖任何后端。
  */
 export default class SavePanel extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      uid: getUserId(),
-      uidInput: "",
       builds: getBuilds(),
       newName: "",
       status: "",
-      busy: false,
     };
   }
-
-  componentDidMount() {
-    // 打开时若有用户 ID，自动拉云端合并
-    if (this.state.uid) this.syncPull();
-  }
-
-  syncPull = async () => {
-    this.setState({ busy: true, status: t("正在从云端读取…", "Loading from cloud...") });
-    const merged = await pullAndMerge();
-    this.setState({
-      busy: false,
-      builds: getBuilds(),
-      status: merged
-        ? t("已从云端同步 ✅", "Synced from cloud ✅")
-        : t("云端同步失败（服务不可用或 ID 不存在）", "Cloud sync failed"),
-    });
-  };
-
-  handleLogin = async () => {
-    const id = this.state.uidInput.trim();
-    if (!id) {
-      this.setState({ status: t("请输入 ID（3-64 位，可用中文）", "Enter an ID (3-64 chars)") });
-      return;
-    }
-    setUserId(id);
-    this.setState({ uid: id, status: t("已登录，正在拉取云端数据…", "Logged in, pulling cloud data...") });
-    await this.syncPull();
-  };
-
-  handleLogout = () => {
-    setUserId("");
-    this.setState({ uid: "", status: t("已退出登录（本地数据保留）", "Logged out (local data kept)") });
-  };
 
   handleSave = () => {
     const name = this.state.newName.trim();
@@ -68,7 +29,7 @@ export default class SavePanel extends PureComponent {
       this.setState({ status: t("请先给这套搭配起个名字", "Name this build first") });
       return;
     }
-    const query = window.location.search || "?b=_" ;
+    const query = window.location.search || "?b=_";
     this.setState({
       builds: saveBuild(name, query),
       newName: "",
@@ -98,49 +59,10 @@ export default class SavePanel extends PureComponent {
       <div className="save-panel-overlay" onClick={closeModal}>
         <div className="save-panel" onClick={(e) => e.stopPropagation()}>
           <div className="save-panel-header">
-            <h2>{t("存档与同步", "Builds & Sync")}</h2>
+            <h2>{t("存档", "Builds")}</h2>
             <button className="save-panel-close" onClick={closeModal}>
               ✕
             </button>
-          </div>
-
-          <div className="save-panel-user">
-            {this.state.uid ? (
-              <div className="save-panel-user-in">
-                <span className="save-panel-uid">
-                  {t("用户 ID：", "User ID: ")}
-                  <b>{this.state.uid}</b>
-                </span>
-                <button onClick={this.syncPull} disabled={this.state.busy}>
-                  {t("立即同步", "Sync now")}
-                </button>
-                <button onClick={this.handleLogout}>
-                  {t("退出登录", "Log out")}
-                </button>
-              </div>
-            ) : (
-              <div className="save-panel-user-in">
-                <input
-                  type="text"
-                  placeholder={t(
-                    "输入自定义 ID（3-64 位，可用中文）跨设备同步",
-                    "Enter a custom ID (3-64 chars) to sync across devices"
-                  )}
-                  value={this.state.uidInput}
-                  onChange={(e) => this.setState({ uidInput: e.target.value })}
-                  onKeyDown={(e) => e.key === "Enter" && this.handleLogin()}
-                />
-                <button onClick={this.handleLogin}>
-                  {t("登录 / 同步", "Login / Sync")}
-                </button>
-              </div>
-            )}
-            <p className="save-panel-hint">
-              {t(
-                "不登录也能正常使用（数据存本机，换设备/清浏览器数据会丢）；登录同一 ID 即可在任何设备恢复存档与分组。",
-                "Works without login (data stays on this device). Log in with the same ID on any device to restore builds & groups."
-              )}
-            </p>
           </div>
 
           <div className="save-panel-new">
@@ -159,6 +81,13 @@ export default class SavePanel extends PureComponent {
           {this.state.status && (
             <div className="save-panel-status">{this.state.status}</div>
           )}
+
+          <p className="save-panel-hint">
+            {t(
+              "存档保存在本机浏览器中，换设备或清除浏览器数据会丢失。",
+              "Builds are stored in this browser. They are lost if you switch devices or clear browser data."
+            )}
+          </p>
 
           <div className="save-panel-list">
             {this.state.builds.length === 0 && (

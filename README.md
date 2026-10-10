@@ -1,3 +1,21 @@
+# Siralim Planner 中文汉化版
+
+> **这是第三方汉化版（非原作者维护）**
+>
+> 本仓库是 [Berated-Bert/siralim-planner](https://github.com/Berated-Bert/siralim-planner) 的**简体中文汉化版**，
+> 由社区玩家基于原版 GPL-3.0 源码修改而来，**不是原作者的项目**。
+>
+> - 原版项目 / 原作者：<https://github.com/Berated-Bert/siralim-planner>（BeratedBert）
+> - 本汉化版：在原版基础上加入中/英切换、官方简中数据、去除了依赖后端的网页问答与云同步功能
+> - 分享码与原版**互相兼容**（同一套 `b=/s=/a=/r=` 编码）
+> - 许可证同为 **GNU GPL-3.0**（见 [LICENSE](LICENSE)），原版版权归原作者所有
+>
+> 本汉化版在线地址：<https://dengdeng63.github.io/siralim-planner-zh/>
+>
+> ---
+>
+> 以下为**原版 README 原文**（保留版权声明与说明，供参考）：
+
 # Siralim Planner
 
 This is a fan-made tool designed to simplify the process of planning builds for Siralim Ultimate. Further details on the tool are available
